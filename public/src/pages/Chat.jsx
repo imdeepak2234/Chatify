@@ -14,33 +14,21 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
-//   useEffect(async () => {
-//     if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-//       navigate("/login");
-//     } else {
-//       setCurrentUser(
-//         await JSON.parse(
-//           localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-//         )
-//       );
-//     }
-//   }, []);
 
-
-useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
-        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-            navigate("/login");
-        } else {
-            const userString = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
-            setCurrentUser(JSON.parse(userString));
-        }
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+        navigate("/login");
+      } else {
+        const userString = localStorage.getItem(
+          process.env.REACT_APP_LOCALHOST_KEY
+        );
+        setCurrentUser(JSON.parse(userString));
+      }
     }
 
     fetchData(); // Call the async function immediately
-
-}, [navigate]);
-
+  }, [navigate]);
 
   useEffect(() => {
     if (currentUser) {
@@ -49,38 +37,27 @@ useEffect(() => {
     }
   }, [currentUser]);
 
-//   useEffect(async () => {
-//     if (currentUser) {
-//       if (currentUser.isAvatarImageSet) {
-//         const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-//         setContacts(data.data);
-//       } else {
-//         navigate("/setAvatar");
-//       }
-//     }
-//   }, [currentUser]);
-
-
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
-        if (currentUser) {
-            if (currentUser.isAvatarImageSet) {
-                try {
-                    const response = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-                    setContacts(response.data);
-                } catch (error) {
-                    console.error("Error fetching contacts:", error);
-                }
-            } else {
-                navigate("/setAvatar");
-            }
+      if (currentUser) {
+        if (currentUser.isAvatarImageSet) {
+          try {
+            const response = await axios.get(
+              `${allUsersRoute}/${currentUser._id}`
+            );
+
+            setContacts(response.data);
+          } catch (error) {
+            console.error("Error fetching contacts:", error);
+          }
+        } else {
+          navigate("/setAvatar");
         }
+      }
     };
 
     fetchData(); // Call the async function immediately
-
-}, [currentUser, navigate]);
-
+  }, [currentUser, navigate]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
@@ -107,17 +84,26 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
   align-items: center;
   background-color: #131324;
+
   .container {
     height: 85vh;
     width: 85vw;
     background-color: #00000076;
     display: grid;
-    grid-template-columns: 25% 75%;
+    grid-template-columns: 40% 60%;
+    overflow: hidden;
+
     @media screen and (min-width: 720px) and (max-width: 1080px) {
-      grid-template-columns: 35% 65%;
+      grid-template-columns: 40% 60%;
+    }
+
+    @media screen and (max-width: 720px) {
+      width: 100vw;
+      height: 100vh;
+      grid-template-columns: 1fr;
+      grid-template-rows: 40% 60%;
     }
   }
 `;

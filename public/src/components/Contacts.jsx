@@ -23,14 +23,13 @@ export default function Contacts({ contacts, changeChat }) {
       }
     };
 
-    fetchData();
+    fetchData(); // Call the async function immediately
   }, []);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
-
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -76,7 +75,6 @@ export default function Contacts({ contacts, changeChat }) {
     </>
   );
 }
-
 const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
