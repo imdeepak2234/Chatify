@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { setAvatarRoute } from "../utils/APIRoutes";
+
 export default function SetAvatar() {
   const api = `https://api.multiavatar.com/4645646`;
   const navigate = useNavigate();
@@ -21,22 +22,15 @@ export default function SetAvatar() {
     theme: "dark",
   };
 
-  // useEffect(async () => {
-  //   if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY))
-  //     navigate("/login");
-  // }, []);
-
-
   useEffect(() => {
     const checkLocalStorage = async () => {
-        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-            navigate("/login");
-        }
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+        navigate("/login");
+      }
     };
 
     checkLocalStorage();
-}, [navigate]);
-
+  }, [navigate]);
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
@@ -64,40 +58,21 @@ export default function SetAvatar() {
     }
   };
 
-  // useEffect(async () => {
-  //   const data = [];
-  //   for (let i = 0; i < 4; i++) {
-  //     const image = await axios.get(
-  //       `${api}/${Math.round(Math.random() * 1000)}`
-  //     );
-  //     const buffer = new Buffer(image.data);
-  //     data.push(buffer.toString("base64"));
-  //   }
-  //   setAvatars(data);
-  //   setIsLoading(false);
-  // }, []);
-
   useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const data = [];
-            for (let i = 0; i < 4; i++) {
-                const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
-                const buffer = new Buffer(image.data);
-                data.push(buffer.toString("base64"));
-            }
-            setAvatars(data);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
+    const fetchAvatars = async () => {
+      const data = [];
+      for (let i = 0; i < 4; i++) {
+        const image = await axios.get(
+          `${api}/${Math.round(Math.random() * 1000)}`
+        );
+        const buffer = new Buffer(image.data);
+        data.push(buffer.toString("base64"));
+      }
+      setAvatars(data);
+      setIsLoading(false);
     };
-
-    fetchData(); // Call the async function immediately
-
-}, [api]);
-
-
+    fetchAvatars();
+  }, [api]);
 
   return (
     <>
@@ -111,22 +86,17 @@ export default function SetAvatar() {
             <h1>Pick an Avatar as your profile picture</h1>
           </div>
           <div className="avatars">
-            {avatars.map((avatar, index) => {
-              return (
-                <div
-                  className={`avatar ${
-                    selectedAvatar === index ? "selected" : ""
-                  }`}
-                >
-                  <img
-                    src={`data:image/svg+xml;base64,${avatar}`}
-                    alt="avatar"
-                    key={avatar}
-                    onClick={() => setSelectedAvatar(index)}
-                  />
-                </div>
-              );
-            })}
+            {avatars.map((avatar, index) => (
+              <div
+                className={`avatar ${
+                  selectedAvatar === index ? "selected" : ""
+                }`}
+                key={avatar}
+                onClick={() => setSelectedAvatar(index)}
+              >
+                <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" />
+              </div>
+            ))}
           </div>
           <button onClick={setProfilePicture} className="submit-btn">
             Set as Profile Picture
@@ -147,6 +117,7 @@ const Container = styled.div`
   background-color: #131324;
   height: 100vh;
   width: 100vw;
+  padding: 1rem;
 
   .loader {
     max-inline-size: 100%;
@@ -155,11 +126,16 @@ const Container = styled.div`
   .title-container {
     h1 {
       color: white;
+      text-align: center;
+      padding: 0 1rem;
     }
   }
+
   .avatars {
     display: flex;
     gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
 
     .avatar {
       border: 0.4rem solid transparent;
@@ -169,15 +145,27 @@ const Container = styled.div`
       justify-content: center;
       align-items: center;
       transition: 0.5s ease-in-out;
+      cursor: pointer;
+
       img {
         height: 6rem;
         transition: 0.5s ease-in-out;
+
+        @media screen and (max-width: 768px) {
+          height: 4rem;
+        }
+
+        @media screen and (max-width: 480px) {
+          height: 3rem;
+        }
       }
     }
+
     .selected {
       border: 0.4rem solid #4e0eff;
     }
   }
+
   .submit-btn {
     background-color: #4e0eff;
     color: white;
@@ -188,8 +176,14 @@ const Container = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+
     &:hover {
       background-color: #4e0eff;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
     }
   }
 `;
