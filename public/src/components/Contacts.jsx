@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/logo.png";
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
 
-//   useEffect(async () => {
-//     const data = await JSON.parse(
-//       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-//     );
-//     setCurrentUserName(data.username);
-//     setCurrentUserImage(data.avatarImage);
-//   }, []);
+  //   useEffect(async () => {
+  //     const data = await JSON.parse(
+  //       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+  //     );
+  //     setCurrentUserName(data.username);
+  //     setCurrentUserImage(data.avatarImage);
+  //   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
-        try {
-            const dataString = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
-            if (dataString) {
-                const data = JSON.parse(dataString);
-                setCurrentUserName(data.username);
-                setCurrentUserImage(data.avatarImage);
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
+      try {
+        const dataString = localStorage.getItem(
+          process.env.REACT_APP_LOCALHOST_KEY
+        );
+        if (dataString) {
+          const data = JSON.parse(dataString);
+          setCurrentUserName(data.username);
+          setCurrentUserImage(data.avatarImage);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     fetchData(); // Call the async function immediately
-
-}, []);
-
+  }, []);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
