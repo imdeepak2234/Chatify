@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
+import { BsChevronDown } from "react-icons/bs"; // Import Chevron Down icon
+import Logout from "./Logout";
 
 export default function Contacts({ contacts, changeChat }) {
-  const [currentUserName, setCurrentUserName] = useState(undefined);
-  const [currentUserImage, setCurrentUserImage] = useState(undefined);
+  const [currentUser, setCurrentUser] = useState(null); // State to store current user data
   const [currentSelected, setCurrentSelected] = useState(undefined);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,8 +17,7 @@ export default function Contacts({ contacts, changeChat }) {
         );
         if (dataString) {
           const data = JSON.parse(dataString);
-          setCurrentUserName(data.username);
-          setCurrentUserImage(data.avatarImage);
+          setCurrentUser(data); // Set current user data
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -30,83 +31,146 @@ export default function Contacts({ contacts, changeChat }) {
     setCurrentSelected(index);
     changeChat(contact);
   };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   return (
-    <>
-      {currentUserImage && currentUserImage && (
-        <Container>
-          <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h3>Chatify</h3>
-          </div>
-          <div className="contacts">
-            {contacts.map((contact, index) => (
-              <div
-                key={contact._id}
-                className={`contact ${
-                  index === currentSelected ? "selected" : ""
-                }`}
-                onClick={() => changeCurrentChat(index, contact)}
-              >
-                <div className="avatar">
-                  <img
-                    src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                    alt=""
-                  />
+    <Container>
+      <div className="header">
+        <div className="brand">
+          <img src={Logo} alt="logo" />
+          <h3>Chatify</h3>
+        </div>
+        {currentUser && ( // Check if currentUser is defined
+          <div className="dropdown-container">
+            <div className="dropdown-toggle" onClick={toggleDropdown}>
+              <div className="avatar">
+                <img
+                  src={`data:image/svg+xml;base64,${currentUser.avatarImage}`}
+                  alt="avatar"
+                />
+              </div>
+              <BsChevronDown className="dropdown-icon" />
+            </div>
+            {dropdownOpen && (
+              <div className="dropdown-content">
+                <div className="option" onClick={toggleDropdown}>
+                  {currentUser.username}
                 </div>
-                <div className="username">
-                  <h3>{contact.username}</h3>
+                <div className="option" onClick={toggleDropdown}>
+                  <Logout />
                 </div>
               </div>
-            ))}
+            )}
           </div>
-          <div className="current-user">
+        )}
+      </div>
+      <div className="contacts">
+        {contacts.map((contact, index) => (
+          <div
+            key={contact._id}
+            className={`contact ${index === currentSelected ? "selected" : ""}`}
+            onClick={() => changeCurrentChat(index, contact)}
+          >
             <div className="avatar">
               <img
-                src={`data:image/svg+xml;base64,${currentUserImage}`}
-                alt="avatar"
+                src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                alt=""
               />
             </div>
             <div className="username">
-              <h2>{currentUserName}</h2>
+              {contact._id === currentUser?._id ? ( // Check if contact is current user
+                <div className="dropdown-toggle" onClick={toggleDropdown}>
+                  <div className="avatar">
+                    <img
+                      src={`data:image/svg+xml;base64,${currentUser.avatarImage}`}
+                      alt="avatar"
+                    />
+                  </div>
+                  <BsChevronDown className="dropdown-icon" />
+                </div>
+              ) : (
+                <h3>{contact.username}</h3>
+              )}
             </div>
           </div>
-        </Container>
-      )}
-    </>
+        ))}
+      </div>
+    </Container>
   );
 }
+
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 75% 15%;
-  overflow: hidden;
+  grid-template-rows: auto 1fr;
   background-color: #080420;
+  overflow: hidden;
+  padding: 1rem;
 
-  .brand {
+  .header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    img {
-      height: 2rem;
+    gap: 1rem; /* Reduced gap between logo and Chatify */
+    padding: 1rem 0;
 
-      @media screen and (max-width: 768px) {
-        height: 1.5rem;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; /* Further reduced gap between logo and Chatify */
+      img {
+        height: 2rem;
       }
-
-      @media screen and (max-width: 480px) {
-        height: 1.2rem;
+      h3 {
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.25rem;
+        @media screen and (max-width: 768px) {
+          font-size: 1rem;
+        }
+        @media screen and (max-width: 480px) {
+          font-size: 0.75rem;
+        }
       }
     }
-    h3 {
-      color: white;
-      text-transform: uppercase;
 
-      @media screen and (max-width: 768px) {
-        font-size: 1rem;
+    .dropdown-container {
+      position: relative;
+      .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Adjust gap between avatar and icon */
+        cursor: pointer;
+        .avatar {
+          img {
+            height: 2rem; /* Adjusted avatar size */
+          }
+        }
+        .dropdown-icon {
+          color: white;
+          font-size: 1.5rem; /* Adjust icon size */
+        }
       }
 
-      @media screen and (max-width: 480px) {
-        font-size: 0.75rem;
+      .dropdown-content {
+        position: absolute;
+        top: 3rem; /* Adjust the top position of dropdown */
+        right: 0;
+        width: 150px; /* Adjust width of dropdown */
+        background-color: #0d0d30;
+        border-radius: 0.5rem;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        .option {
+          padding: 1rem;
+          color: white;
+          cursor: pointer;
+          &:hover {
+            background-color: #9a86f3;
+          }
+        }
       }
     }
   }
@@ -115,17 +179,19 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: auto;
     gap: 0.8rem;
-    padding: 0 1rem;
+    overflow: auto;
+    max-height: calc(
+      100vh - 250px
+    ); /* Adjust max-height based on other UI components */
 
     &::-webkit-scrollbar {
       width: 0.2rem;
-      &-thumb {
-        background-color: #ffffff39;
-        width: 0.1rem;
-        border-radius: 1rem;
-      }
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #ffffff39;
+      border-radius: 1rem;
     }
 
     .contact {
@@ -140,93 +206,28 @@ const Container = styled.div`
       align-items: center;
       transition: 0.5s ease-in-out;
 
-      @media screen and (max-width: 768px) {
-        padding: 0.3rem;
-        gap: 0.75rem;
-      }
-
-      @media screen and (max-width: 480px) {
-        padding: 0.2rem;
-        gap: 0.5rem;
-      }
-
       .avatar {
         img {
-          height: 3rem;
-
-          @media screen and (max-width: 768px) {
-            height: 2.5rem;
-          }
-
-          @media screen and (max-width: 480px) {
-            height: 2rem;
-          }
+          height: 2rem; /* Adjusted avatar size */
         }
       }
 
       .username {
         h3 {
           color: white;
-
+          font-size: 1rem;
           @media screen and (max-width: 768px) {
-            font-size: 1rem;
-          }
-
-          @media screen and (max-width: 480px) {
             font-size: 0.75rem;
           }
         }
       }
-    }
 
-    .selected {
-      background-color: #9a86f3;
-    }
-  }
-
-  .current-user {
-    background-color: #0d0d30;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    padding: 0 1rem;
-
-    @media screen and (max-width: 768px) {
-      gap: 1.5rem;
-      padding: 0 0.5rem;
-    }
-
-    @media screen and (max-width: 480px) {
-      gap: 1rem;
-      padding: 0 0.25rem;
-    }
-
-    .avatar {
-      img {
-        height: 4rem;
-
-        @media screen and (max-width: 768px) {
-          height: 3.5rem;
-        }
-
-        @media screen and (max-width: 480px) {
-          height: 3rem;
-        }
+      &:hover {
+        background-color: #9a86f3;
       }
-    }
 
-    .username {
-      h2 {
-        color: white;
-
-        @media screen and (max-width: 768px) {
-          font-size: 1.25rem;
-        }
-
-        @media screen and (max-width: 480px) {
-          font-size: 1rem;
-        }
+      &.selected {
+        background-color: #9a86f3;
       }
     }
   }
