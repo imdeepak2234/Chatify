@@ -70,7 +70,6 @@ export default function Register() {
         email,
         password,
       });
-
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
       }
@@ -79,6 +78,7 @@ export default function Register() {
           process.env.REACT_APP_LOCALHOST_KEY,
           JSON.stringify(data.user)
         );
+
         navigate("/");
       }
     }
@@ -97,6 +97,7 @@ export default function Register() {
             placeholder="Username"
             name="username"
             onChange={(e) => handleChange(e)}
+            min="3"
           />
           <input
             type="email"
@@ -136,6 +137,7 @@ const FormContainer = styled.div`
   gap: 1rem;
   align-items: center;
   background-color: #131324;
+
   .brand {
     display: flex;
     align-items: center;
@@ -157,7 +159,17 @@ const FormContainer = styled.div`
     background-color: #00000076;
     border-radius: 2rem;
     padding: 3rem 5rem;
+
+    @media screen and (max-width: 768px) {
+      padding: 3rem;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 2rem;
+      gap: 1rem;
+    }
   }
+
   input {
     background-color: transparent;
     padding: 1rem;
@@ -166,11 +178,18 @@ const FormContainer = styled.div`
     color: white;
     width: 100%;
     font-size: 1rem;
+
     &:focus {
       border: 0.1rem solid #997af0;
       outline: none;
     }
+
+    @media screen and (max-width: 480px) {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+    }
   }
+
   button {
     background-color: #4e0eff;
     color: white;
@@ -181,17 +200,29 @@ const FormContainer = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+
     &:hover {
       background-color: #4e0eff;
     }
+
+    @media screen and (max-width: 480px) {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+    }
   }
+
   span {
     color: white;
     text-transform: uppercase;
+    font-size: 1rem;
     a {
       color: #4e0eff;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    @media screen and (max-width: 480px) {
+      font-size: 0.75rem;
     }
   }
 `;
