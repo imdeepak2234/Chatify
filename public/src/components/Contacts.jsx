@@ -7,14 +7,6 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
 
-  //   useEffect(async () => {
-  //     const data = await JSON.parse(
-  //       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-  //     );
-  //     setCurrentUserName(data.username);
-  //     setCurrentUserImage(data.avatarImage);
-  //   }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,13 +23,14 @@ export default function Contacts({ contacts, changeChat }) {
       }
     };
 
-    fetchData(); // Call the async function immediately
+    fetchData();
   }, []);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
+
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -47,27 +40,25 @@ export default function Contacts({ contacts, changeChat }) {
             <h3>snappy</h3>
           </div>
           <div className="contacts">
-            {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                      alt=""
-                    />
-                  </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
-                  </div>
+            {contacts.map((contact, index) => (
+              <div
+                key={contact._id}
+                className={`contact ${
+                  index === currentSelected ? "selected" : ""
+                }`}
+                onClick={() => changeCurrentChat(index, contact)}
+              >
+                <div className="avatar">
+                  <img
+                    src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                    alt=""
+                  />
                 </div>
-              );
-            })}
+                <div className="username">
+                  <h3>{contact.username}</h3>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="current-user">
             <div className="avatar">
@@ -85,11 +76,13 @@ export default function Contacts({ contacts, changeChat }) {
     </>
   );
 }
+
 const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
   background-color: #080420;
+
   .brand {
     display: flex;
     align-items: center;
@@ -97,18 +90,37 @@ const Container = styled.div`
     justify-content: center;
     img {
       height: 2rem;
+
+      @media screen and (max-width: 768px) {
+        height: 1.5rem;
+      }
+
+      @media screen and (max-width: 480px) {
+        height: 1.2rem;
+      }
     }
     h3 {
       color: white;
       text-transform: uppercase;
+
+      @media screen and (max-width: 768px) {
+        font-size: 1rem;
+      }
+
+      @media screen and (max-width: 480px) {
+        font-size: 0.75rem;
+      }
     }
   }
+
   .contacts {
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: auto;
     gap: 0.8rem;
+    padding: 0 1rem;
+
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -117,28 +129,58 @@ const Container = styled.div`
         border-radius: 1rem;
       }
     }
+
     .contact {
       background-color: #ffffff34;
       min-height: 5rem;
       cursor: pointer;
-      width: 90%;
+      width: 100%;
       border-radius: 0.2rem;
       padding: 0.4rem;
       display: flex;
       gap: 1rem;
       align-items: center;
       transition: 0.5s ease-in-out;
+
+      @media screen and (max-width: 768px) {
+        padding: 0.3rem;
+        gap: 0.75rem;
+      }
+
+      @media screen and (max-width: 480px) {
+        padding: 0.2rem;
+        gap: 0.5rem;
+      }
+
       .avatar {
         img {
           height: 3rem;
+
+          @media screen and (max-width: 768px) {
+            height: 2.5rem;
+          }
+
+          @media screen and (max-width: 480px) {
+            height: 2rem;
+          }
         }
       }
+
       .username {
         h3 {
           color: white;
+
+          @media screen and (max-width: 768px) {
+            font-size: 1rem;
+          }
+
+          @media screen and (max-width: 480px) {
+            font-size: 0.75rem;
+          }
         }
       }
     }
+
     .selected {
       background-color: #9a86f3;
     }
@@ -150,21 +192,41 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     gap: 2rem;
+    padding: 0 1rem;
+
+    @media screen and (max-width: 768px) {
+      gap: 1.5rem;
+      padding: 0 0.5rem;
+    }
+
+    @media screen and (max-width: 480px) {
+      gap: 1rem;
+      padding: 0 0.25rem;
+    }
+
     .avatar {
       img {
         height: 4rem;
-        max-inline-size: 100%;
+
+        @media screen and (max-width: 768px) {
+          height: 3.5rem;
+        }
+
+        @media screen and (max-width: 480px) {
+          height: 3rem;
+        }
       }
     }
+
     .username {
       h2 {
         color: white;
-      }
-    }
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
-      gap: 0.5rem;
-      .username {
-        h2 {
+
+        @media screen and (max-width: 768px) {
+          font-size: 1.25rem;
+        }
+
+        @media screen and (max-width: 480px) {
           font-size: 1rem;
         }
       }
