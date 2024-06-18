@@ -7,7 +7,7 @@
 // export const recieveMessageRoute = `${host}/api/messages/getmsg`;
 // export const setAvatarRoute = `${host}/api/auth/setavatar`;
 
-export const host = "https://your-backend-vercel-url.vercel.app";
+export const host = "https://chatify-ashen.vercel.app";
 export const loginRoute = `${host}/api/auth/login`;
 export const registerRoute = `${host}/api/auth/register`;
 export const logoutRoute = `${host}/api/auth/logout`;
