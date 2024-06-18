@@ -7,7 +7,13 @@ const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
 
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: "https://chatify-42op.vercel.app", // Replace with your frontend URL
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 mongoose
