@@ -10,7 +10,9 @@ require("dotenv").config();
 // CORS configuration
 const corsOptions = {
   origin: "https://chatify-42op.vercel.app", // Replace with your frontend URL
-  optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
 
